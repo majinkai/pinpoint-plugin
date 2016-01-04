@@ -30,7 +30,7 @@ public class DubboProviderInterceptor extends SpanSimpleAroundInterceptor {
     protected Trace createTrace(Object target, Object[] args) {
         Invoker invoker = (Invoker) target;
 
-        if (DubboConstants.MONITOR_SERVICE_QFN.equals(invoker.getInterface().getName())) {
+        if (DubboConstants.MONITOR_SERVICE_FQCN.equals(invoker.getInterface().getName())) {
             return traceContext.disableSampling();
         }
 
@@ -60,7 +60,6 @@ public class DubboProviderInterceptor extends SpanSimpleAroundInterceptor {
 
     @Override
     protected void doInBeforeTrace(SpanRecorder recorder, Object target, Object[] args) {
-        Invoker invoker = (Invoker) target;
         RpcInvocation invocation = (RpcInvocation)args[0];
         RpcContext rpcContext = RpcContext.getContext();
 
@@ -96,7 +95,7 @@ public class DubboProviderInterceptor extends SpanSimpleAroundInterceptor {
         RpcInvocation invocation = (RpcInvocation)args[0];
 
         recorder.recordApi(methodDescriptor);
-        recorder.recordAttribute(DubboConstants.DUBBO_ARGUMENT_ANNOTATION_KEY, invocation.getArguments());
+        recorder.recordAttribute(DubboConstants.DUBBO_ARGS_ANNOTATION_KEY, invocation.getArguments());
 
         if (throwable == null) {
             recorder.recordAttribute(DubboConstants.DUBBO_RESULT_ANNOTATION_KEY, result);

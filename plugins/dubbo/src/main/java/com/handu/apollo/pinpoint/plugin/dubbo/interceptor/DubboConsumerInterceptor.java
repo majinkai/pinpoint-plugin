@@ -1,11 +1,11 @@
 package com.handu.apollo.pinpoint.plugin.dubbo.interceptor;
 
 import com.alibaba.dubbo.rpc.Invoker;
+import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.RpcInvocation;
 import com.handu.apollo.pinpoint.plugin.dubbo.DubboConstants;
 import com.navercorp.pinpoint.bootstrap.context.*;
 import com.navercorp.pinpoint.bootstrap.interceptor.AroundInterceptor1;
-
 /**
  * @author Jinkai.Ma
  */
@@ -22,7 +22,7 @@ public class DubboConsumerInterceptor implements AroundInterceptor1 {
     @Override
     public void before(Object target, Object arg0) {
         Invoker invoker = (Invoker) target;
-        if (DubboConstants.MONITOR_SERVICE_QFN.equals(invoker.getInterface().getName())) {
+        if (DubboConstants.MONITOR_SERVICE_FQCN.equals(invoker.getInterface().getName())) {
             return;
         }
 
@@ -63,7 +63,7 @@ public class DubboConsumerInterceptor implements AroundInterceptor1 {
     @Override
     public void after(Object target, Object arg0, Object result, Throwable throwable) {
         Invoker invoker = (Invoker) target;
-        if (DubboConstants.MONITOR_SERVICE_QFN.equals(invoker.getInterface().getName())) {
+        if (DubboConstants.MONITOR_SERVICE_FQCN.equals(invoker.getInterface().getName())) {
             return;
         }
 
@@ -80,14 +80,13 @@ public class DubboConsumerInterceptor implements AroundInterceptor1 {
             recorder.recordApi(descriptor);
 
             if (throwable == null) {
-                //TODO Get remote address
-                String endPoint = invoker.getUrl().getAddress();
+                String endPoint = RpcContext.getContext().getRemoteAddressString();
                 // RPC client have to record end point (server address)
                 recorder.recordEndPoint(endPoint);
 
                 // Optionally, record the destination id (logical name of server. e.g. DB name)
                 recorder.recordDestinationId(endPoint);
-                recorder.recordAttribute(DubboConstants.DUBBO_ARGUMENT_ANNOTATION_KEY, invocation.getArguments());
+                recorder.recordAttribute(DubboConstants.DUBBO_ARGS_ANNOTATION_KEY, invocation.getArguments());
                 recorder.recordAttribute(DubboConstants.DUBBO_RESULT_ANNOTATION_KEY, result);
             } else {
                 recorder.recordException(throwable);

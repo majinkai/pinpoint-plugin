@@ -1,20 +1,18 @@
 package com.handu.apollo.pinpoint.plugin.dubbo;
 
-import com.navercorp.pinpoint.common.trace.AnnotationKey;
-import com.navercorp.pinpoint.common.trace.AnnotationKeyFactory;
-import com.navercorp.pinpoint.common.trace.ServiceType;
-import com.navercorp.pinpoint.common.trace.ServiceTypeFactory;
+import com.navercorp.pinpoint.common.trace.*;
+
+import static com.navercorp.pinpoint.common.trace.ServiceTypeProperty.RECORD_STATISTICS;
 
 /**
  * @author Jinkai.Ma
  */
 public interface DubboConstants {
 
-    ServiceType DUBBO_PROVIDER_SERVICE_TYPE = ServiceTypeFactory.of(1919, "DUBBO_PROVIDER");
-    ServiceType DUBBO_CONSUMER_SERVICE_TYPE = ServiceTypeFactory.of(9909, "DUBBO_CONSUMER");
-    AnnotationKey DUBBO_ARGUMENT_ANNOTATION_KEY = AnnotationKeyFactory.of(996, "DUBBO_ARGUMENT");
-    AnnotationKey DUBBO_PROCEDURE_ANNOTATION_KEY = AnnotationKeyFactory.of(997, "DUBBO_PROCEDURE");
-    AnnotationKey DUBBO_RESULT_ANNOTATION_KEY = AnnotationKeyFactory.of(998, "DUBBO_RESULT");
+    ServiceType DUBBO_PROVIDER_SERVICE_TYPE = ServiceTypeFactory.of(1919, "DUBBO_PROVIDER", RECORD_STATISTICS);
+    ServiceType DUBBO_CONSUMER_SERVICE_TYPE = ServiceTypeFactory.of(9909, "DUBBO_CONSUMER", RECORD_STATISTICS);
+    AnnotationKey DUBBO_ARGS_ANNOTATION_KEY = AnnotationKeyFactory.of(996, "dubbo.args", AnnotationKeyProperty.VIEW_IN_RECORD_SET);
+    AnnotationKey DUBBO_RESULT_ANNOTATION_KEY = AnnotationKeyFactory.of(997, "dubbo.result");
 
     String META_DO_NOT_TRACE = "_DUBBO_DO_NOT_TRACE";
     String META_TRANSACTION_ID = "_DUBBO_TRASACTION_ID";
@@ -24,5 +22,5 @@ public interface DubboConstants {
     String META_PARENT_APPLICATION_TYPE = "_DUBBO_PARENT_APPLICATION_TYPE";
     String META_FLAGS = "_DUBBO_FLAGS";
 
-    String MONITOR_SERVICE_QFN = "com.alibaba.dubbo.monitor.MonitorService";
+    String MONITOR_SERVICE_FQCN = "com.alibaba.dubbo.monitor.MonitorService";
 }

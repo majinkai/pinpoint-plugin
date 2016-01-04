@@ -11,8 +11,7 @@ public class DubboTraceMetadataProvider implements TraceMetadataProvider {
     public void setup(TraceMetadataSetupContext context) {
         context.addServiceType(DubboConstants.DUBBO_PROVIDER_SERVICE_TYPE);
         context.addServiceType(DubboConstants.DUBBO_CONSUMER_SERVICE_TYPE);
-        context.addAnnotationKey(DubboConstants.DUBBO_PROCEDURE_ANNOTATION_KEY);
-        context.addAnnotationKey(DubboConstants.DUBBO_ARGUMENT_ANNOTATION_KEY);
+        context.addAnnotationKey(DubboConstants.DUBBO_ARGS_ANNOTATION_KEY);
         context.addAnnotationKey(DubboConstants.DUBBO_RESULT_ANNOTATION_KEY);
     }
 }
