@@ -9,7 +9,7 @@ import static com.navercorp.pinpoint.common.trace.ServiceTypeProperty.RECORD_STA
  */
 public interface DubboConstants {
 
-    ServiceType DUBBO_PROVIDER_SERVICE_TYPE = ServiceTypeFactory.of(1919, "DUBBO_PROVIDER");
+    ServiceType DUBBO_PROVIDER_SERVICE_TYPE = ServiceTypeFactory.of(1919, "DUBBO_PROVIDER", RECORD_STATISTICS);
     ServiceType DUBBO_CONSUMER_SERVICE_TYPE = ServiceTypeFactory.of(9909, "DUBBO_CONSUMER", RECORD_STATISTICS);
     AnnotationKey DUBBO_ARGS_ANNOTATION_KEY = AnnotationKeyFactory.of(996, "dubbo.args");
     AnnotationKey DUBBO_RESULT_ANNOTATION_KEY = AnnotationKeyFactory.of(997, "dubbo.result");
