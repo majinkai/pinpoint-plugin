@@ -15,6 +15,6 @@ public class DubboProviderDetector implements ApplicationTypeDetector {
 
     @Override
     public boolean detect(ConditionProvider provider) {
-        return provider.checkMainClass("com.alibaba.dubbo.rpc.proxy.AbstractProxyInvoker");
+        return provider.checkForClass("com.alibaba.dubbo.rpc.proxy.AbstractProxyInvoker");
     }
 }

@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(PinpointPluginTestSuite.class)
 @PinpointAgent(PinpointTestConstants.AGENT_PATH)
-@Dependency({ "com.alibaba:dubbo:[2.5.3]" })
+@Dependency({ "com.alibaba:dubbo:2.5.3" })
 public class DubboIT {
     @Test
     public void test() throws Exception {
