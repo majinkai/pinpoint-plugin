@@ -6,6 +6,7 @@ import com.alibaba.dubbo.rpc.RpcInvocation;
 import com.handu.apollo.pinpoint.plugin.dubbo.DubboConstants;
 import com.navercorp.pinpoint.bootstrap.context.*;
 import com.navercorp.pinpoint.bootstrap.interceptor.AroundInterceptor1;
+
 /**
  * @author Jinkai.Ma
  */
@@ -21,12 +22,7 @@ public class DubboConsumerInterceptor implements AroundInterceptor1 {
 
     @Override
     public void before(Object target, Object arg0) {
-        Invoker invoker = (Invoker) target;
-        if (DubboConstants.MONITOR_SERVICE_FQCN.equals(invoker.getInterface().getName())) {
-            return;
-        }
-
-        Trace trace = traceContext.currentTraceObject();
+        Trace trace = this.getTrace(target);
         if (trace == null) {
             return;
         }
@@ -62,12 +58,7 @@ public class DubboConsumerInterceptor implements AroundInterceptor1 {
 
     @Override
     public void after(Object target, Object arg0, Object result, Throwable throwable) {
-        Invoker invoker = (Invoker) target;
-        if (DubboConstants.MONITOR_SERVICE_FQCN.equals(invoker.getInterface().getName())) {
-            return;
-        }
-
-        Trace trace = traceContext.currentTraceObject();
+        Trace trace = this.getTrace(target);
         if (trace == null) {
             return;
         }
@@ -94,6 +85,16 @@ public class DubboConsumerInterceptor implements AroundInterceptor1 {
         } finally {
             trace.traceBlockEnd();
         }
+    }
+
+    private Trace getTrace(Object target) {
+        Invoker invoker = (Invoker) target;
+        // Ignore monitor service.
+        if (DubboConstants.MONITOR_SERVICE_FQCN.equals(invoker.getInterface().getName())) {
+            return null;
+        }
+
+        return traceContext.currentTraceObject();
     }
 
 }

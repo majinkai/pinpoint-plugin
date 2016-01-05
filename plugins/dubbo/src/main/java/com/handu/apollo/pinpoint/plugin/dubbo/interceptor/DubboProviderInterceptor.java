@@ -18,23 +18,16 @@ public class DubboProviderInterceptor extends SpanSimpleAroundInterceptor {
         super(traceContext, descriptor, DubboProviderInterceptor.class);
     }
 
-    /**
-     * In this method, you have to check if the current request contains following informations:
-     *
-     * 1. Marker that indicates this transaction must not be traced
-     * 2. Data required to continue tracing a transaction. transaction id, parent id and so on.
-     *
-     * Then you have to create appropriate Trace object.
-     */
     @Override
     protected Trace createTrace(Object target, Object[] args) {
         Invoker invoker = (Invoker) target;
 
+        // Ignore monitor service.
         if (DubboConstants.MONITOR_SERVICE_FQCN.equals(invoker.getInterface().getName())) {
             return traceContext.disableSampling();
         }
 
-        RpcInvocation invocation = (RpcInvocation)args[0];
+        RpcInvocation invocation = (RpcInvocation) args[0];
 
         // If this transaction is not traceable, mark as disabled.
         if (invocation.getAttachment(DubboConstants.META_DO_NOT_TRACE) != null) {
@@ -60,7 +53,7 @@ public class DubboProviderInterceptor extends SpanSimpleAroundInterceptor {
 
     @Override
     protected void doInBeforeTrace(SpanRecorder recorder, Object target, Object[] args) {
-        RpcInvocation invocation = (RpcInvocation)args[0];
+        RpcInvocation invocation = (RpcInvocation) args[0];
         RpcContext rpcContext = RpcContext.getContext();
 
         // You have to record a service type within Server range.
@@ -79,20 +72,16 @@ public class DubboProviderInterceptor extends SpanSimpleAroundInterceptor {
                 short parentApplicationType = NumberUtils.parseShort(invocation.getAttachment(DubboConstants.META_PARENT_APPLICATION_TYPE), ServiceType.UNDEFINED.getCode());
                 recorder.recordParentApplication(parentApplicationName, parentApplicationType);
 
-                String serverHostName = rpcContext.getLocalHostName();
-
-                if (serverHostName != null) {
-                    recorder.recordAcceptorHost(serverHostName);
-                } else {
-                    recorder.recordAcceptorHost(rpcContext.getLocalAddressString());
-                }
+                // Pinpoint finds caller - callee relation by matching caller's end point and callee's acceptor host.
+                // https://github.com/naver/pinpoint/issues/1395
+                recorder.recordAcceptorHost(rpcContext.getLocalAddressString());
             }
         }
     }
 
     @Override
     protected void doInAfterTrace(SpanRecorder recorder, Object target, Object[] args, Object result, Throwable throwable) {
-        RpcInvocation invocation = (RpcInvocation)args[0];
+        RpcInvocation invocation = (RpcInvocation) args[0];
 
         recorder.recordApi(methodDescriptor);
         recorder.recordAttribute(DubboConstants.DUBBO_ARGS_ANNOTATION_KEY, invocation.getArguments());
