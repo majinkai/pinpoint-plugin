@@ -18,7 +18,7 @@
   <dependencies>
     <dependency>
       <groupId>com.navercorp.pinpoint</groupId>
-      <artifactId>pinpoint-bootstrap</artifactId>
+      <artifactId>pinpoint-bootstrap-core</artifactId>
       <version>${pinpoint.version}</version>
       <scope>provided</scope>
     </dependency>
