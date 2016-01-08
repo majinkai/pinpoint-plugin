@@ -29,6 +29,6 @@ public final class DubboProviderDetector implements ApplicationTypeDetector {
 
     @Override
     public boolean detect(ConditionProvider provider) {
-        return provider.checkMainClass("com.navercorp.plugin.sample.target.TargetClass14_Server");
+        return provider.checkMainClass("com.alibaba.dubbo.container.Main") || provider.checkForClass("com.alibaba.dubbo.rpc.proxy.AbstractProxyInvoker");
     }
 }
