@@ -25,6 +25,11 @@
       <artifactId>pinpoint-dubbo-plugin</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.handu.apollo</groupId>
+      <artifactId>pinpoint-rabbitmq-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
