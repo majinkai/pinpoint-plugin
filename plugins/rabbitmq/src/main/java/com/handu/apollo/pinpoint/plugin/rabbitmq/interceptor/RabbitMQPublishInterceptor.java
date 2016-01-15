@@ -10,8 +10,6 @@ import com.navercorp.pinpoint.bootstrap.interceptor.annotation.Scope;
 import com.navercorp.pinpoint.bootstrap.logging.PLogger;
 import com.navercorp.pinpoint.bootstrap.logging.PLoggerFactory;
 import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
 
 /**
  * @author Jinkai.Ma
@@ -41,8 +39,31 @@ public class RabbitMQPublishInterceptor implements AroundInterceptor {
             return;
         }
 
-        SpanEventRecorder recorder = trace.traceBlockBegin();
-        recorder.recordServiceType(RabbitMQConstants.RABBITMQ_SERVICE_TYPE);
+//        AMQP.BasicProperties properties = (AMQP.BasicProperties) args[4];
+//        Map<String, Object> headers = new HashMap<String, Object>();
+//        for (String key : properties.getHeaders().keySet()) {
+//            headers.put(key, properties.getHeaders().get(key));
+//        }
+
+        if (trace.canSampled()) {
+            SpanEventRecorder recorder = trace.traceBlockBegin();
+            recorder.recordServiceType(RabbitMQConstants.RABBITMQ_SERVICE_TYPE);
+
+//            TraceId nextId = trace.getTraceId().getNextTraceId();
+//
+//            recorder.recordNextSpanId(nextId.getSpanId());
+//
+//            headers.put(RabbitMQConstants.META_TRANSACTION_ID, nextId.getTransactionId());
+//            headers.put(RabbitMQConstants.META_SPAN_ID, Long.toString(nextId.getSpanId()));
+//            headers.put(RabbitMQConstants.META_PARENT_SPAN_ID, Long.toString(nextId.getParentSpanId()));
+//            headers.put(RabbitMQConstants.META_PARENT_APPLICATION_TYPE, Short.toString(RabbitMQConstants.RABBITMQ_SERVICE_TYPE.getCode()));
+//            headers.put(RabbitMQConstants.META_PARENT_APPLICATION_NAME, traceContext.getApplicationName());
+//            headers.put(RabbitMQConstants.META_FLAGS, Short.toString(nextId.getFlags()));
+//        } else {
+//            headers.put(RabbitMQConstants.META_DO_NOT_TRACE, "1");
+        }
+
+//        ((HeadersFieldSetter) properties)._$PINPOINT$_setHeaders(headers);
     }
 
     @Override
@@ -51,7 +72,7 @@ public class RabbitMQPublishInterceptor implements AroundInterceptor {
             logger.afterInterceptor(target, args);
         }
         Trace trace = traceContext.currentTraceObject();
-        if (trace == null) {
+        if (trace == null || !trace.canSampled()) {
             return;
         }
 
@@ -64,13 +85,9 @@ public class RabbitMQPublishInterceptor implements AroundInterceptor {
             SpanEventRecorder recorder = trace.currentSpanEventRecorder();
             recorder.recordApi(descriptor);
             if (throwable == null) {
-                Channel channel = (Channel) target;
-                Connection connection = channel.getConnection();
-                String endPoint = connection.getAddress().getHostAddress() + ":" + connection.getPort();
+                recorder.recordEndPoint(exchange);
 
-                recorder.recordEndPoint(endPoint);
-
-                recorder.recordDestinationId(endPoint);
+                recorder.recordDestinationId(exchange);
                 recorder.recordAttribute(RabbitMQConstants.RABBITMQ_EXCHANGE_ANNOTATION_KEY, exchange);
                 recorder.recordAttribute(RabbitMQConstants.RABBITMQ_ROUTINGKEY_ANNOTATION_KEY, routingKey);
                 recorder.recordAttribute(RabbitMQConstants.RABBITMQ_PROPERTIES_ANNOTATION_KEY, properties);

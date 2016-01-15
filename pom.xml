@@ -16,7 +16,7 @@
     <jdk.home>${env.JAVA_6_HOME}</jdk.home>
     <pinpoint.version>1.5.1</pinpoint.version>
     <dubbo.version>2.5.3</dubbo.version>
-    <amqp-client.version>3.4.4</amqp-client.version>
+    <amqp.version>1.4.4.RELEASE</amqp.version>
   </properties>
 
   <modules>
@@ -32,9 +32,9 @@
         <version>${dubbo.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.rabbitmq</groupId>
-        <artifactId>amqp-client</artifactId>
-        <version>${amqp-client.version}</version>
+        <groupId>org.springframework.amqp</groupId>
+        <artifactId>spring-rabbit</artifactId>
+        <version>${amqp.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
